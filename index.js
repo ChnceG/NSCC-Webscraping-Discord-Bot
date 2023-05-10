@@ -15,7 +15,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 // When the bot is ready, scheduled tasks will run
 client.once(Events.ClientReady, c => {
 	console.log(`Ready! Logged in as ${c.user.tag}`);
-	cron.schedule('0 0 10,18 * * * *', runEverything);
+	cron.schedule('0 0 13,21 * * * *', runEverything);
 });
 
 // Log in to Discord with your client's token
@@ -36,9 +36,11 @@ async function runEverything() {
 	const messages = [...sentMessages];
 	for (const post of posts) {
 		if (!!sentMessages.find(m => m.link === post.link)) continue;
-		const formatted = formatEmbed(post);
-		const messageId = await sendMessage(client, formatted);
-		messages.push({ messageId, link: post.link, closeDate: post.closeDate });
+		if (isListingValid) {
+			const formatted = formatEmbed(post);
+			const messageId = await sendMessage(client, formatted);
+			messages.push({ messageId, link: post.link, closeDate: post.closeDate });
+			}
 	}
 	saveData(messages);
 }
