@@ -35,12 +35,10 @@ async function runEverything() {
 	const posts = await scrape();
 	const messages = [...sentMessages];
 	for (const post of posts) {
-		if (!!sentMessages.find(m => m.link === post.link)) continue;
-		if (isListingValid) {
-			const formatted = formatEmbed(post);
-			const messageId = await sendMessage(client, formatted);
-			messages.push({ messageId, link: post.link, closeDate: post.closeDate });
-			}
+		if (!!sentMessages.find(m => m.link === post.link) || !isListingValid(post)) continue;
+		const formatted = formatEmbed(post);
+		const messageId = await sendMessage(client, formatted);
+		messages.push({ messageId, link: post.link, closeDate: post.closeDate });
 	}
 	saveData(messages);
 }
